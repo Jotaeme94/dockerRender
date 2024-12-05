@@ -30,5 +30,8 @@ RUN chown -R www-data:www-data /var/www/html && \
 # Exponer el puerto 80
 EXPOSE 80
 
+# Configurar Apache para servir desde el directorio public/
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+
 # Comando para iniciar Apache
 CMD ["apache2-foreground"]
