@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: symfony-app
+    env: docker
+    dockerfilePath: Dockerfile
+    buildCommand: ""
+    startCommand: apache2-foreground
+    plan: free
+    healthCheckPath: "/"
