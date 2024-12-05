@@ -1,4 +1,3 @@
-# Imagen base de PHP con Apache
 FROM php:8.2-apache
 
 # Instalar extensiones necesarias
@@ -13,14 +12,16 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Instalar dependencias desde el archivo composer.lock
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+# Instalar dependencias desde composer.lock
+RUN composer install --no-dev --optimize-autoloader
 
 # Limpiar caché de Symfony en producción
 RUN php bin/console cache:clear --env=prod || true
 
-# Configurar permisos
-RUN chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html/var
+# Crear y configurar permisos para directorio var/
+RUN mkdir -p /var/www/html/var && \
+    chown -R www-data:www-data /var/www/html && \
+    chmod -R 775 /var/www/html/var
 
 # Exponer el puerto 80
 EXPOSE 80
