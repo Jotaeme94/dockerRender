@@ -12,16 +12,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Instalar dependencias desde composer.lock
-RUN composer install --no-dev --optimize-autoloader
+# Crear el directorio var/ si no existe
+RUN mkdir -p /var/www/html/var && \
+    mkdir -p /var/www/html/public
 
-# Limpiar caché de Symfony en producción
+# Instalar dependencias desde composer.lock y desactivar scripts automáticos
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Limpiar caché de Symfony en producción (sin fallar si algo falta)
 RUN php bin/console cache:clear --env=prod || true
 
-# Crear y configurar permisos para directorio var/
-RUN mkdir -p /var/www/html/var && \
-    chown -R www-data:www-data /var/www/html && \
-    chmod -R 775 /var/www/html/var
+# Configurar permisos adecuados para Symfony
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 775 /var/www/html/var && \
+    chmod -R 775 /var/www/html/public
 
 # Exponer el puerto 80
 EXPOSE 80
