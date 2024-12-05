@@ -17,7 +17,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Instalar dependencias sin ejecutar scripts automáticos
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer require symfony/runtime && composer install --no-dev --optimize-autoloader --no-scripts
 
 # Limpiar caché de Symfony en producción
 RUN php bin/console cache:clear --env=prod || true
